@@ -1,0 +1,8 @@
+node_modules/
+test-results/
+playwright-report/
+.playwright-artifacts-*/
+blob-report/
+*.png
+.DS_Store
+Thumbs.db

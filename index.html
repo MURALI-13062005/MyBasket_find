@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyBasket - Mini Checkout & Order History Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amazon+Ember:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="amazon-layout">
+    <!-- Top Amazon Navigation Bar -->
+    <header class="amz-header">
+      <div class="amz-header-top">
+        <!-- MyBasket Custom Vector Brand Logo -->
+        <a href="/" class="amz-logo mybasket-brand-logo" aria-label="MyBasket Home">
+          <div class="logo-svg-wrap">
+            <svg width="40" height="34" viewBox="0 0 38 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="basketGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#FFB703" />
+                  <stop offset="50%" stop-color="#FB8500" />
+                  <stop offset="100%" stop-color="#E63946" />
+                </linearGradient>
+                <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#FFE066" />
+                  <stop offset="100%" stop-color="#FFB703" />
+                </linearGradient>
+              </defs>
+              <!-- Basket Handle Arc -->
+              <path d="M11 13.5C11 9 14.5 5.5 19 5.5C23.5 5.5 27 9 27 13.5" stroke="url(#handleGrad)" stroke-width="2.8" stroke-linecap="round"/>
+              <!-- Basket Main Body -->
+              <path d="M5 13H33L29.5 28C29.2 29.5 27.8 30.5 26.2 30.5H11.8C10.2 30.5 8.8 29.5 8.5 28L5 13Z" fill="url(#basketGrad)"/>
+              <!-- Basket Woven Ribs Accent -->
+              <path d="M12 17.5L14 26M19 17.5V26M26 17.5L24 26" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.9"/>
+              <!-- Fast Shopping Sparkle / Star -->
+              <path d="M32 5L33.2 7.8L36 9L33.2 10.2L32 13L30.8 10.2L28 9L30.8 7.8L32 5Z" fill="#FFE066"/>
+            </svg>
+          </div>
+          <div class="logo-text-col">
+            <div class="logo-title-row">
+              <span class="brand-name-my">My</span><span class="brand-name-basket">Basket</span><span class="brand-dot-in">.in</span>
+            </div>
+            <div class="brand-smile-track">
+              <svg width="84" height="8" viewBox="0 0 84 8" fill="none">
+                <path d="M2 2C26 7.5 58 7.5 82 2" stroke="#FFB703" stroke-width="2.6" stroke-linecap="round"/>
+                <path d="M78 1.5L82.5 2.5L80 6" stroke="#FFB703" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <!-- Deliver To -->
+        <div class="amz-nav-item amz-deliver-to" title="Deliver to location">
+          <svg class="amz-icon-pin" width="16" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <div class="amz-nav-text-col">
+            <span class="amz-text-small" id="navDeliveryLabel">Deliver to</span>
+            <span class="amz-text-bold" id="navDeliveryLocation">India 110001</span>
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="amz-search-container">
+          <div class="amz-search-dept">
+            <select id="categoryFilter" aria-label="Select Search Department">
+              <option value="all">All Departments</option>
+              <option value="Kitchen">Kitchen & Dining</option>
+              <option value="Furniture">Furniture & Living</option>
+              <option value="Audio">Audio & Headphones</option>
+              <option value="Peripherals">Keyboards & Mice</option>
+              <option value="Wearables">Smartwatches</option>
+              <option value="Accessories">Tech Accessories</option>
+              <option value="Lifestyle">Lifestyle</option>
+            </select>
+          </div>
+          <div class="amz-search-input-wrap">
+            <input 
+              type="text" 
+              id="searchInput" 
+              class="amz-search-input" 
+              placeholder="Search MyBasket for kitchen, furniture, headphones, keyboards..."
+              aria-label="Search products"
+              autocomplete="off"
+            >
+            <button type="button" class="btn-clear-search" id="searchClearBtn" aria-label="Clear search" style="display: none;">✕</button>
+          </div>
+          <button type="button" class="amz-search-submit" id="searchBtn" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#131921" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Language / Currency Switcher -->
+        <div class="amz-nav-item amz-currency-picker" id="currencyToggleBtn" title="Switch Currency ($ / ₹)">
+          <span class="amz-flag-icon" id="currencyFlag">🇺🇸</span>
+          <span class="amz-text-bold" id="currencyCode">USD ($)</span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M7 10l5 5 5-5z"/>
+          </svg>
+        </div>
+
+        <!-- User Accounts / Sign In -->
+        <div class="amz-nav-item amz-account-btn" id="accountNavBtn">
+          <div class="amz-nav-text-col">
+            <span class="amz-text-small" id="navGreeting">Hello, Customer</span>
+            <span class="amz-text-bold">Account & Lists</span>
+          </div>
+        </div>
+
+        <!-- Returns & Orders (ORDER HISTORY) -->
+        <button type="button" class="amz-nav-item amz-orders-btn" id="ordersNavBtn" data-testid="orders-history-btn" aria-label="View Orders and Purchase History">
+          <div class="amz-nav-text-col">
+            <span class="amz-text-small">Returns</span>
+            <span class="amz-text-bold">& Orders <span class="orders-count-badge" id="historyCountBadge">0</span></span>
+          </div>
+        </button>
+
+        <!-- Cart Nav Pill -->
+        <button type="button" class="amz-nav-item amz-cart-btn" id="headerCartPill" aria-label="Cart">
+          <div class="amz-cart-icon-wrap">
+            <svg width="34" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="9" cy="21" r="1.5"></circle>
+              <circle cx="20" cy="21" r="1.5"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span class="amz-cart-count" id="headerCartCount" data-testid="header-cart-count">0</span>
+          </div>
+          <div class="amz-nav-text-col">
+            <span class="amz-text-small">Cart</span>
+            <span class="amz-text-bold" id="headerCartTotal" data-testid="header-cart-total">$0.00</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Secondary Sub-Navigation -->
+      <nav class="amz-subnav" aria-label="Categories">
+        <ul class="amz-subnav-list">
+          <li><button type="button" class="amz-subnav-btn amz-subnav-all" id="subnavAllBtn"><span class="hamburger-icon">☰</span> All</button></li>
+          <li><button type="button" class="amz-subnav-btn" id="subnavKitchenBtn">🍳 Kitchen & Dining</button></li>
+          <li><button type="button" class="amz-subnav-btn" id="subnavFurnitureBtn">🪑 Furniture & Home</button></li>
+          <li><button type="button" class="amz-subnav-btn" id="subnavBestSellersBtn">🔥 Best Sellers</button></li>
+          <li><button type="button" class="amz-subnav-btn" id="subnavDealsBtn">⚡ Today's Deals</button></li>
+          <li><button type="button" class="amz-subnav-btn" id="subnavElectronicsBtn">💻 Electronics</button></li>
+          <li><a href="#ordersNavBtn" class="amz-subnav-link" id="subnavHistoryLink">📦 Order History</a></li>
+          <li><a href="#checkoutSidebar" class="amz-subnav-link" id="subnavCheckoutLink">🛒 Checkout</a></li>
+          <li><span class="amz-subnav-tag">⚡ Fast Delivery &bull; 100% Genuine</span></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Amazon Hero Carousel / Sale Banner -->
+    <section class="amz-hero-banner" aria-label="Featured Offers">
+      <div class="amz-hero-gradient"></div>
+      <div class="amz-hero-content">
+        <div class="amz-hero-text">
+          <div class="amz-hero-deal-pill">
+            <span class="deal-hot-icon">⚡</span>
+            <span>GREAT FESTIVAL SALE &bull; UP TO 60% OFF</span>
+          </div>
+          <h2 class="amz-hero-title">Upgrade Your Workspace & Audio Gear</h2>
+          <p class="amz-hero-desc">Exclusive deals on flagship ANC headphones, wireless mechanical keyboards, and precision smart devices. Free Next-Day Prime Delivery.</p>
+          <div class="amz-hero-badges">
+            <span class="hero-chip">🎧 30h Battery Audio</span>
+            <span class="hero-chip">⌨️ Hot-Swap RGB</span>
+            <span class="hero-chip">⌚ AMOLED Smartwatches</span>
+            <span class="hero-chip">🚚 100% Free Shipping</span>
+          </div>
+        </div>
+        <div class="amz-hero-promo-card">
+          <div class="promo-card-badge">DEAL OF THE DAY</div>
+          <h3 class="promo-card-title">Sony Noise Canceling Pro</h3>
+          <div class="promo-card-price">
+            <span class="promo-discount">-25%</span>
+            <span class="promo-curr">$59.99</span>
+            <span class="promo-mrp">$79.99</span>
+          </div>
+          <p class="promo-card-note">Ends in <span id="dealTimer">04h : 22m : 18s</span></p>
+          <button type="button" class="btn-hero-deal" id="viewHistoryBannerBtn">View Past Orders</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="main-content" id="mainContent">
+      <h1 class="brand-title sr-only">MiniStore Checkout</h1>
+
+      <div class="content-grid">
+        <!-- Left: Product Catalog -->
+        <section class="products-section" aria-labelledby="catalogTitle">
+          <div class="catalog-heading-row">
+            <div>
+              <h2 id="catalogTitle" class="catalog-main-title">Today's Featured Deals & Products</h2>
+              <p class="catalog-sub-title">Top rated electronics & accessories. Add items and experience real-time checkout.</p>
+            </div>
+            <div class="catalog-meta">
+              <span class="results-count" id="resultsCount">Showing 6 products</span>
+            </div>
+          </div>
+
+          <div class="products-grid" id="productsGrid" data-testid="products-grid">
+            <!-- Dynamically populated via app.js -->
+          </div>
+        </section>
+
+        <!-- Right: Cart & Checkout Sidebar -->
+        <aside class="checkout-sidebar" id="checkoutSidebar" aria-labelledby="cartHeading">
+          <!-- Shopping Cart Card -->
+          <div class="card amz-cart-card" data-testid="cart-container">
+            <div class="card-header">
+              <div class="header-left">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#131921" stroke-width="2.5">
+                  <circle cx="9" cy="21" r="1.5"></circle>
+                  <circle cx="20" cy="21" r="1.5"></circle>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <h2 id="cartHeading" class="card-title">Shopping Cart</h2>
+              </div>
+              <button type="button" class="btn-clear-cart" id="clearCartBtn" data-testid="clear-cart-btn" style="display: none;">
+                Deselect all items
+              </button>
+            </div>
+
+            <!-- Empty Cart Alert / Notice -->
+            <div id="cartAlert" class="alert alert-warning" role="alert" style="display: none;" data-testid="cart-error">
+              <span class="alert-icon">⚠️</span>
+              <span class="alert-text" id="cartAlertMessage">Your cart is empty. Please add items to proceed.</span>
+            </div>
+
+            <!-- Empty State Illustration -->
+            <div class="cart-empty" id="cartEmptyState" data-testid="cart-empty-message">
+              <div class="cart-empty-image">
+                <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="50" cy="50" r="46" fill="#F0F2F2" stroke="#E7E7E7" stroke-width="2"/>
+                  <path d="M26 32H34L39.5 60H72L78 38H38" stroke="#131921" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="43" cy="69" r="5" fill="#FFA41C"/>
+                  <circle cx="68" cy="69" r="5" fill="#FFA41C"/>
+                  <path d="M48 45L54 37L60 45H57V52H51V45H48Z" fill="#FFD814" stroke="#D5D9D9" stroke-width="1.2"/>
+                </svg>
+              </div>
+              <h3 class="cart-empty-title">Your MyBasket Cart is empty</h3>
+              <p class="cart-empty-text">Your shopping cart is waiting. Give it purpose — add tech accessories, keyboards, or headphones.</p>
+              <a href="#productsGrid" class="btn-amz-link-shop">Explore today's deals</a>
+            </div>
+
+            <!-- Cart Items List -->
+            <div class="cart-items-list" id="cartItemsList" data-testid="cart-items-list" style="display: none;">
+              <!-- Cart items rendered dynamically -->
+            </div>
+
+            <!-- Cart Price Breakdown Summary -->
+            <div class="cart-summary" id="cartSummarySection" style="display: none;">
+              <div class="summary-row">
+                <span>Subtotal (<span id="cartItemCountLabel">0 items</span>):</span>
+                <span class="summary-amount" id="cartSubtotal" data-testid="cart-subtotal">$0.00</span>
+              </div>
+              <div class="summary-row">
+                <span>Estimated Tax (8%):</span>
+                <span class="summary-amount" id="cartTax" data-testid="cart-tax">$0.00</span>
+              </div>
+              <div class="summary-row">
+                <span>Shipping & Delivery:</span>
+                <span class="summary-amount text-success" id="cartShipping" data-testid="cart-shipping">Free</span>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-row total-row">
+                <span class="total-label">Order Total:</span>
+                <span class="total-amount" id="cartTotal" data-testid="cart-total">$0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Checkout Details Card -->
+          <div class="card amz-checkout-card">
+            <div class="card-header">
+              <div class="header-left">
+                <span class="step-circle">1</span>
+                <h2 class="card-title">Shipping & Payment Details</h2>
+              </div>
+            </div>
+
+            <form id="checkoutForm" data-testid="checkout-form" novalidate>
+              <!-- Customer Full Name -->
+              <div class="form-group" id="nameGroup">
+                <label for="customerName" class="form-label">
+                  Full Name <span class="required-star">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="customerName" 
+                  name="customerName" 
+                  class="form-input" 
+                  placeholder="e.g. Sarah Connor"
+                  autocomplete="name"
+                  data-testid="customer-name-input"
+                  required
+                >
+                <span class="form-error" id="nameError" data-testid="name-error" aria-live="polite"></span>
+              </div>
+
+              <!-- Customer Email -->
+              <div class="form-group" id="emailGroup">
+                <label for="customerEmail" class="form-label">
+                  Email Address <span class="optional-tag">(for order updates)</span>
+                </label>
+                <input 
+                  type="email" 
+                  id="customerEmail" 
+                  name="customerEmail" 
+                  class="form-input" 
+                  placeholder="e.g. sarah@example.com"
+                  autocomplete="email"
+                  data-testid="customer-email-input"
+                >
+                <span class="form-error" id="emailError" data-testid="email-error" aria-live="polite"></span>
+              </div>
+
+              <!-- Delivery Address -->
+              <div class="form-group">
+                <label for="customerAddress" class="form-label">
+                  Delivery Address <span class="optional-tag">(Optional)</span>
+                </label>
+                <div class="address-quick-pills">
+                  <button type="button" class="btn-address-pill active" data-addr="42 Connaught Place, New Delhi 110001">Home</button>
+                  <button type="button" class="btn-address-pill" data-addr="Cyber Hub Tech Park, Tower B, Gurugram 122002">Office</button>
+                </div>
+                <input 
+                  type="text" 
+                  id="customerAddress" 
+                  class="form-input" 
+                  value="42 Connaught Place, New Delhi 110001"
+                  placeholder="Street address, city, postal code"
+                >
+              </div>
+
+              <!-- Payment Method Selection -->
+              <div class="form-group">
+                <label class="form-label">Select Payment Method</label>
+                <div class="payment-methods-grid">
+                  <label class="payment-card selected">
+                    <input type="radio" name="paymentMethod" value="mybasket_pay" checked>
+                    <div class="payment-card-content">
+                      <span class="pay-icon">💳</span>
+                      <div>
+                        <strong>MyBasket Pay / Credit Card</strong>
+                        <p class="pay-sub">Fast, secure 1-click checkout</p>
+                      </div>
+                    </div>
+                  </label>
+                  <label class="payment-card">
+                    <input type="radio" name="paymentMethod" value="cod">
+                    <div class="payment-card-content">
+                      <span class="pay-icon">💵</span>
+                      <div>
+                        <strong>Cash on Delivery (COD)</strong>
+                        <p class="pay-sub">Pay in cash or UPI at delivery</p>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Place Order Button (Duplicate Click Protected) -->
+              <button 
+                type="submit" 
+                class="btn-place-order" 
+                id="placeOrderBtn" 
+                data-testid="place-order-btn"
+              >
+                <span class="btn-spinner" id="btnSpinner" style="display: none;" aria-hidden="true"></span>
+                <span class="btn-text-content" id="btnText">Place Order ($0.00)</span>
+              </button>
+
+              <div class="guarantee-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#007600" stroke-width="2.5">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span>Safe & Secure Transaction &bull; Duplicate-click guarded</span>
+              </div>
+            </form>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- Order Confirmation Modal -->
+    <div 
+      class="modal-backdrop" 
+      id="orderConfirmationModal" 
+      data-testid="order-confirmation-modal" 
+      style="display: none;" 
+      role="dialog" 
+      aria-modal="true" 
+      aria-labelledby="confirmModalTitle"
+    >
+      <div class="modal-dialog">
+        <div class="confirmation-box">
+          <!-- Green Success Banner -->
+          <div class="confirmation-header">
+            <div class="success-checkmark">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div>
+              <h2 id="confirmModalTitle" class="confirm-title">Order Placed Successfully!</h2>
+              <p class="confirm-subtitle">
+                Thank you, <strong id="confirmCustomerName" data-testid="order-customer-name">Arun</strong>! An order confirmation has been registered.
+              </p>
+            </div>
+          </div>
+
+          <!-- Reference Number Bar -->
+          <div class="ref-banner">
+            <div>
+              <span class="ref-title">Order Reference Number:</span>
+              <span class="ref-code" id="confirmOrderRef" data-testid="order-ref-number">ORD-20261121-XXXX</span>
+            </div>
+            <button type="button" class="btn-amz-secondary" id="copyRefBtn" title="Copy Reference Number">
+              <span id="copyRefText">Copy</span>
+            </button>
+          </div>
+
+          <div class="confirm-date-row">
+            <span id="confirmOrderDate">Placed on Nov 21, 2026</span>
+            <span class="badge-status-confirmed">Order Confirmed</span>
+          </div>
+
+          <!-- Interactive Tracking Stepper -->
+          <div class="tracking-progress-widget">
+            <h4 class="tracking-title">Estimated Delivery: Tomorrow by 8 PM</h4>
+            <div class="stepper-bar">
+              <div class="step-point completed">
+                <span class="dot"></span>
+                <span class="label">Ordered</span>
+              </div>
+              <div class="step-line active"></div>
+              <div class="step-point completed">
+                <span class="dot"></span>
+                <span class="label">Packed</span>
+              </div>
+              <div class="step-line"></div>
+              <div class="step-point">
+                <span class="dot"></span>
+                <span class="label">Shipped</span>
+              </div>
+              <div class="step-line"></div>
+              <div class="step-point">
+                <span class="dot"></span>
+                <span class="label">Delivery</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Purchased Items Breakdown -->
+          <div class="purchased-summary-box">
+            <h4 class="summary-box-heading">Items Ordered</h4>
+            <div class="purchased-items-list" id="confirmItemsList" data-testid="confirm-items-list">
+              <!-- Dynamically rendered -->
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-row total-row">
+              <span class="total-label">Grand Total Paid:</span>
+              <span class="total-amount" id="confirmTotalPaid" data-testid="order-total-paid">$0.00</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="modal-buttons-row">
+            <button type="button" class="btn-amz-primary" id="newOrderBtn" data-testid="new-order-btn">
+              Continue Shopping
+            </button>
+            <button type="button" class="btn-amz-secondary" id="openHistoryFromModalBtn">
+              View in Your Orders
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDER HISTORY DRAWER / MODAL -->
+    <div 
+      class="modal-backdrop" 
+      id="orderHistoryModal" 
+      data-testid="order-history-modal" 
+      style="display: none;" 
+      role="dialog" 
+      aria-modal="true" 
+      aria-labelledby="historyModalTitle"
+    >
+      <div class="modal-dialog modal-dialog-large">
+        <div class="history-container">
+          <div class="history-header">
+            <div class="history-title-wrap">
+              <h2 id="historyModalTitle" class="history-title">Your Orders & Purchase History</h2>
+              <p class="history-subtitle">View past transactions, track active shipments, or re-order items with one click.</p>
+            </div>
+            <div class="history-header-actions">
+              <button type="button" class="btn-clear-history" id="clearHistoryBtn" title="Clear past history">Clear History</button>
+              <button type="button" class="btn-close-modal" id="closeHistoryBtn" aria-label="Close History">✕</button>
+            </div>
+          </div>
+
+          <!-- Order History Empty State -->
+          <div class="history-empty" id="historyEmptyState" style="display: none;">
+            <div class="history-empty-icon">📦</div>
+            <h3>No past orders found</h3>
+            <p>You haven't placed any orders yet. Once you complete a purchase, it will appear here permanently.</p>
+            <button type="button" class="btn-amz-primary" id="startShoppingHistoryBtn">Shop Today's Deals</button>
+          </div>
+
+          <!-- Orders List -->
+          <div class="orders-history-list" id="ordersHistoryList">
+            <!-- Dynamically populated from localStorage -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Package Tracking Detail Modal -->
+    <div 
+      class="modal-backdrop" 
+      id="trackingModal" 
+      style="display: none;" 
+      role="dialog" 
+      aria-modal="true" 
+      aria-labelledby="trackingModalTitle"
+    >
+      <div class="modal-dialog">
+        <div class="tracking-detail-card">
+          <div class="tracking-header">
+            <h3 id="trackingModalTitle" class="tracking-header-title">Package Shipment Status</h3>
+            <button type="button" class="btn-close-modal" id="closeTrackingBtn">✕</button>
+          </div>
+          <div class="tracking-body">
+            <div class="tracking-ref-badge" id="trackingRefDisplay">ORD-XXXX</div>
+            <div class="tracking-status-pill on-time">On time: Arriving Tomorrow by 8 PM</div>
+
+            <div class="timeline-visual">
+              <div class="timeline-item done">
+                <div class="timeline-point">✓</div>
+                <div class="timeline-info">
+                  <strong>Order Placed & Confirmed</strong>
+                  <span class="timeline-time">Today, Verified with Payment</span>
+                </div>
+              </div>
+              <div class="timeline-item done">
+                <div class="timeline-point">✓</div>
+                <div class="timeline-info">
+                  <strong>Packed at Fulfillment Hub</strong>
+                  <span class="timeline-time">Dispatched from MyBasket Fulfillment Hub, Haryana</span>
+                </div>
+              </div>
+              <div class="timeline-item current">
+                <div class="timeline-point">🚚</div>
+                <div class="timeline-info">
+                  <strong>In Transit to Local Delivery Center</strong>
+                  <span class="timeline-time">Expected arrival at local hub by morning</span>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-point">🏠</div>
+                <div class="timeline-info">
+                  <strong>Out for Delivery</strong>
+                  <span class="timeline-time">Arriving at your doorstep</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tracking-footer">
+            <button type="button" class="btn-amz-primary" id="dismissTrackingBtn">Close Tracking</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <!-- MyBasket Footer -->
+    <footer class="amz-footer">
+      <div class="amz-footer-backtotop" id="backToTopBtn">Back to top</div>
+      <div class="amz-footer-links">
+        <div class="footer-col">
+          <h4>Get to Know Us</h4>
+          <p>About MyBasket</p>
+          <p>Careers</p>
+          <p>Press Releases</p>
+          <p>MyBasket Science & Technology</p>
+        </div>
+        <div class="footer-col">
+          <h4>Connect with Us</h4>
+          <p>Facebook</p>
+          <p>Twitter / X</p>
+          <p>Instagram</p>
+        </div>
+        <div class="footer-col">
+          <h4>Make Money with Us</h4>
+          <p>Sell on MyBasket</p>
+          <p>Protect and Build Your Brand</p>
+          <p>MyBasket Global Selling</p>
+          <p>Become an Affiliate</p>
+        </div>
+        <div class="footer-col">
+          <h4>Let Us Help You</h4>
+          <p>Your Account</p>
+          <p>Returns Centre</p>
+          <p>100% Purchase Protection</p>
+          <p>Help & Customer Care</p>
+        </div>
+      </div>
+      <div class="amz-footer-bottom">
+        <p>&copy; 2026, MyBasket - Mini Checkout & Browser Test Suite Demo &bull; Built with HTML, CSS, JavaScript & Playwright</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
